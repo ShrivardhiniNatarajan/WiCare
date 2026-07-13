@@ -4,356 +4,536 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet data-dc-atomics>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Doto:wght@400..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}
-html,body{margin:0; scroll-behavior: smooth;}
-body{background:#0a0d14; /* deep near-black/navy */}
-a{color:#4df2b3;text-decoration:none}
-a:hover{color:#94ffda}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #000000; color: #ffffff; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 
-/* Theming */
-.app{
-  --tx:#e7eaf0;
-  --muted:#828a97;
-  --faint:#4b515d;
-  --line:rgba(255,255,255,0.07);
-  --line2:rgba(255,255,255,0.12);
-  --blue:#4df2b3; /* teal/emerald accent */
-  --blue-l:#94ffda;
-  --blue-f:rgba(77,242,179,0.15);
-  --red:#f24d4d;
-  --red-f:rgba(242,77,77,0.12);
-  --bg-card:rgba(255,255,255,0.02);
-  --bg-sidebar:rgba(0,0,0,0.4);
-  color:var(--tx);
-  min-height:100vh;
-  font-family:'Space Mono',ui-monospace,monospace;
-  -webkit-font-smoothing:antialiased;
-  display: flex;
+:root {
+  --bg-main: #000000;
+  --bg-card: #0a0a0a;
+  --bg-sidebar: #000000;
+  --bg-popup: #222222;
+  --border: #222222;
+  --text-main: #ffffff;
+  --text-muted: #888888;
+  --text-faint: #555555;
+  
+  --color-green: #10b981;
+  --color-blue: #3b82f6;
+  --color-purple: #8b5cf6;
+  --color-orange: #f59e0b;
+  --color-red: #ef4444;
+  --color-btn: #064e3b;
+  --color-btn-hover: #065f46;
 }
-.app.alert{box-shadow:inset 0 3px 0 var(--red)}
 
-.mono{font-family:'Space Mono',ui-monospace,monospace}
-.lbl{font-family:'Space Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
-.num{font-family:'Doto','Space Mono',ui-monospace,monospace;font-weight:600;color:var(--tx);line-height:1;letter-spacing:0.01em}
+.app.alert {
+  --border: #ef444433;
+}
 
-/* Sidebar Navigation */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
 .sidebar {
   width: 80px;
   background: var(--bg-sidebar);
-  border-right: 1px solid var(--line);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 0;
-  flex-shrink: 0;
-  height: 100vh;
+  padding: 20px 0;
   position: sticky;
   top: 0;
+  height: 100vh;
+  z-index: 20;
 }
-.sb-logo { margin-bottom: 40px; }
-.sb-logo svg { width: 32px; height: 32px; fill: var(--blue); }
-.sb-nav { display: flex; flex-direction: column; gap: 32px; width: 100%; align-items: center; }
-.sb-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--faint); cursor: pointer; transition: color 0.2s; }
-.sb-item:hover, .sb-item.active { color: var(--blue); }
-.sb-icon { width: 20px; height: 20px; border-radius: 4px; border: 2px solid currentColor; }
-.sb-item .lbl { font-size: 9px; letter-spacing: 0; }
-.sb-item.active .sb-icon { background: var(--blue); }
+.sb-logo {
+  width: 40px; height: 40px;
+  background: #064e3b;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 30px;
+}
+.sb-logo svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 2; }
 
-/* Main Content Area */
+.sb-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+.sb-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sb-item:hover, .sb-item.active {
+  color: var(--color-green);
+}
+.sb-item.active {
+  background: rgba(16, 185, 129, 0.1);
+  padding: 8px 0;
+  border-radius: 8px;
+  margin: 0 8px;
+}
+.sb-icon { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.sb-label { font-size: 10px; font-weight: 500; }
+
+/* MAIN CONTENT */
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
 }
 
-/* Header */
-.hdr {
+/* HEADER */
+.header {
+  height: 70px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 48px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(10,13,20,0.8);
-  backdrop-filter: blur(10px);
+  padding: 0 32px;
+  background: var(--bg-main);
   position: sticky;
   top: 0;
   z-index: 10;
 }
-.hdr-title { display: flex; align-items: center; gap: 12px; }
-.hdr-title h1 { margin: 0; font-size: 16px; font-weight: 700; color: var(--tx); font-family: 'Space Mono'; }
-.hdr-subtitle { font-size: 13px; color: var(--muted); }
-.hdr-right { display: flex; align-items: center; gap: 24px; }
-.status-chip { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; background: var(--blue-f); color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-.app.alert .status-chip { background: var(--red-f); color: var(--red); }
-.status-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.hdr-time { font-family: 'Doto', monospace; font-size: 14px; color: var(--muted); }
+.hdr-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hdr-brand { font-size: 18px; font-weight: 700; color: #fff; }
+.hdr-divider { color: var(--text-faint); }
+.hdr-subtitle { font-size: 14px; font-weight: 500; color: var(--text-muted); }
 
-/* Content Scroll */
-.content-area {
-  padding: 40px 48px;
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-green);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.app.alert .status-pill {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-red);
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.hdr-time { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.hdr-icon { width: 20px; height: 20px; stroke: var(--text-muted); fill: none; stroke-width: 2; cursor: pointer; }
+.hdr-avatar { width: 32px; height: 32px; background: #064e3b; color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+
+/* CONTENT GRID */
+.content {
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
+  gap: 24px;
 }
 
-/* Hero Section */
-.hero-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; align-items: center; padding: 32px; position: relative; overflow: hidden; }
-.figure { position: relative; width: 280px; display: flex; flex-direction: column; align-items: center; z-index: 2;}
-.glow { position: absolute; left: 50%; top: 50%; width: 200px; height: 200px; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle, var(--blue-f), transparent 62%); pointer-events: none; }
-.app.alert .glow { background: radial-gradient(circle, var(--red-f), transparent 62%); }
-.vid { width: 240px; height: 300px; object-fit: cover; z-index: 1; filter: brightness(1.3) contrast(1.1); }
-.hero-score { position: absolute; right: 48px; top: 48px; display: flex; flex-direction: column; align-items: flex-end; }
-.hero-score .num { font-size: 48px; }
+/* HERO AREA */
+.hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-video { width: 200px; height: 260px; object-fit: cover; filter: brightness(1.2) contrast(1.1); position: relative; z-index: 2; }
+.hero-glow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%); z-index: 1; }
+.app.alert .hero-glow { background: radial-gradient(circle, rgba(239,68,68,0.15), transparent 70%); }
 
-/* Grid of Vitals */
-.vitals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-.vital-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-.vc-hdr { display: flex; justify-content: space-between; align-items: flex-start; }
-.vc-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
-.vc-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
-.app.alert .vc-title .dot { background: var(--red); }
-.vc-val { display: flex; align-items: baseline; gap: 6px; }
-.vc-val .num { font-size: 24px; }
-.vc-val .u { font-size: 11px; color: var(--muted); }
-.sig-svg { width: 100%; height: 64px; display: block; margin-top: 8px; }
-.sig-line { fill: none; stroke: var(--blue); stroke-width: 1.5; stroke-linejoin: round; }
-.sig-bar { fill: var(--blue); opacity: 0.7; }
-.app.alert .sig-line { stroke: var(--red); }
-.app.alert .sig-bar { fill: var(--red); }
-.vc-normal { font-size: 11px; color: var(--faint); margin-top: auto; }
+.hero-score-box {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hs-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+.hs-val { font-size: 36px; font-weight: 700; line-height: 1; }
 
-/* Hypnogram Full Width */
-.hypno-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+/* KPI CARDS */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.card-dot { width: 8px; height: 8px; border-radius: 50%; }
+.card-val { font-size: 24px; font-weight: 700; display: flex; align-items: baseline; gap: 4px; }
+.card-unit { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+.card-chart { width: 100%; height: 50px; margin-bottom: 8px; }
+.card-footer { font-size: 11px; color: var(--text-faint); margin-top: auto; }
 
-/* Assessment Section */
-.assessment-wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; }
-.diag-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
-.app.alert .diag-card { background: linear-gradient(135deg, var(--red-f) 0%, transparent 100%); border-color: rgba(242,77,77,0.3); }
-.diag-header { display: flex; justify-content: space-between; align-items: center; }
-.diag-header h3 { margin: 0; font-size: 13px; font-weight: 700; color: var(--tx); }
-.diag-prob { font-size: 32px; font-family: 'Doto', monospace; }
-.diag-prob span { font-size: 12px; color: var(--muted); font-family: 'Space Mono'; font-weight: 400; }
-.diag-pattern { font-size: 20px; font-weight: 700; color: var(--blue); font-family: 'Doto', monospace; margin: 8px 0; }
-.app.alert .diag-pattern { color: var(--red); }
+/* CHART COLORS */
+.dot-blue { background: var(--color-blue); } .stroke-blue { stroke: var(--color-blue); }
+.dot-green { background: var(--color-green); } .stroke-green { stroke: var(--color-green); }
+.dot-orange { background: var(--color-orange); } .stroke-orange { stroke: var(--color-orange); }
+.dot-purple { background: var(--color-purple); } .stroke-purple { stroke: var(--color-purple); }
 
-/* Influential Signals (Explainability Bars) */
-.inf-signals { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-.inf-sig { display: flex; align-items: center; gap: 16px; }
-.inf-lbl { width: 140px; font-size: 11px; color: var(--muted); }
-.inf-track { flex: 1; height: 6px; background: var(--line); border-radius: 3px; }
-.inf-bar { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.4s ease; }
-.app.alert .inf-bar { background: var(--red); }
-.inf-pct { width: 32px; text-align: right; font-size: 11px; color: var(--tx); font-family: 'Doto'; }
+.app.alert .card-dot { background: var(--color-red); }
+.app.alert .card-chart polyline { stroke: var(--color-red); }
+.app.alert .card-chart rect { fill: var(--color-red); }
 
-/* Event Timeline */
-.timeline-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 32px; }
-.tl-item { display: flex; gap: 16px; margin-bottom: 24px; position: relative; }
+/* HYPNOGRAM */
+.hypno-card {
+  grid-column: span 4;
+}
+.hypno-header { display: flex; justify-content: space-between; margin-bottom: 16px; }
+
+/* ASSESSMENT SECTION */
+.assessment-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+}
+
+/* EVENT TIMELINE */
+.tl-item { display: flex; gap: 16px; margin-bottom: 16px; position: relative; }
 .tl-item:last-child { margin-bottom: 0; }
-.tl-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--blue); background: var(--bg-card); position: relative; z-index: 2; margin-top: 4px; }
-.app.alert .tl-dot.alert { border-color: var(--red); }
-.tl-line { position: absolute; left: 5px; top: 16px; bottom: -24px; width: 2px; background: var(--line); z-index: 1; }
+.tl-dot-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
+.tl-dot-inner { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--color-green); background: var(--bg-card); z-index: 2; }
+.app.alert .tl-dot-inner.alert { border-color: var(--color-red); }
+.tl-line { position: absolute; top: 12px; bottom: -16px; width: 2px; background: var(--border); z-index: 1; }
 .tl-item:last-child .tl-line { display: none; }
-.tl-content { display: flex; flex-direction: column; gap: 4px; }
-.tl-time { font-size: 11px; color: var(--muted); font-family: 'Doto'; }
-.tl-desc { font-size: 13px; color: var(--tx); }
+.tl-time { font-size: 12px; font-weight: 500; color: var(--text-muted); width: 45px; }
+.tl-desc { font-size: 13px; color: var(--text-main); }
 
-/* Floating Simulation Popup */
+/* INFLUENTIAL SIGNALS */
+.inf-sig { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.inf-lbl { width: 140px; font-size: 12px; color: var(--text-muted); }
+.inf-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; }
+.inf-bar { height: 100%; background: #047857; border-radius: 4px; transition: width 0.4s ease; }
+.app.alert .inf-bar { background: var(--color-red); }
+.inf-pct { width: 30px; text-align: right; font-size: 12px; font-weight: 500; }
+
+/* POPUP */
 .sim-popup {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 320px;
-  background: rgba(15,18,25,0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--line2);
+  bottom: 32px;
+  right: 32px;
+  width: 300px;
+  background: var(--bg-popup);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   z-index: 100;
   display: flex;
   flex-direction: column;
 }
-.sp-hdr { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-.sp-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
-.sp-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-.sp-group { display: flex; flex-direction: column; gap: 8px; }
-.sp-group label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.sp-toggles { display: flex; background: var(--bg-card); border-radius: 6px; padding: 4px; border: 1px solid var(--line); }
-.sp-tog { flex: 1; text-align: center; padding: 8px 0; font-size: 11px; color: var(--muted); cursor: pointer; border-radius: 4px; transition: all 0.2s; }
-.sp-tog.active { background: var(--line2); color: var(--tx); }
-.sp-tog.active.red { color: var(--red); }
-.sp-select { appearance: none; background: var(--bg-card); border: 1px solid var(--line); color: var(--tx); padding: 10px 12px; border-radius: 6px; font-family: 'Space Mono'; font-size: 12px; width: 100%; cursor: pointer; outline: none; }
-.sp-btn { background: var(--blue); color: #000; border: none; padding: 12px; border-radius: 6px; font-family: 'Space Mono'; font-weight: 700; font-size: 12px; cursor: pointer; transition: background 0.2s; }
-.sp-btn:hover { background: var(--blue-l); }
-</style>
-</helmet>
+.sp-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.sp-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sp-group label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.sp-toggles {
+  display: flex;
+  background: rgba(0,0,0,0.5);
+  padding: 4px;
+  border-radius: 6px;
+}
+.sp-tog {
+  flex: 1;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.sp-tog.active {
+  background: var(--bg-card);
+  color: var(--text-main);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.sp-tog.active.red { color: var(--color-red); }
+.sp-select {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+}
+.sp-btn {
+  background: var(--color-btn);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.sp-btn:hover { background: var(--color-btn-hover); }
 
-<div class="app {{ appCls }}">
+</style>
+</head>
+<body>
+<x-dc>
+<div class="app {{ appCls }} layout">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
     </div>
     <div class="sb-nav">
-      <div class="sb-item active"><div class="sb-icon"></div><span class="lbl">Dashboard</span></div>
-      <div class="sb-item"><div class="sb-icon"></div><span class="lbl">Patients</span></div>
-      <div class="sb-item"><div class="sb-icon"></div><span class="lbl">Live</span></div>
-      <div class="sb-item"><div class="sb-icon"></div><span class="lbl">Replay</span></div>
-      <div class="sb-item"><div class="sb-icon"></div><span class="lbl">Model</span></div>
-      <div class="sb-item"><div class="sb-icon"></div><span class="lbl">Datasets</span></div>
+      <div class="sb-item active">
+        <svg class="sb-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span class="sb-label">Dashboard</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="sb-label">Patients</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="sb-label">Live</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span class="sb-label">Replay</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <span class="sb-label">Model</span>
+      </div>
+      <div class="sb-item">
+        <svg class="sb-icon"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        <span class="sb-label">Datasets</span>
+      </div>
     </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
-    <header class="hdr">
-      <div class="hdr-title">
-        <h1>WiCare</h1>
-        <span class="hdr-subtitle">Live Monitoring ┬╖ Room 204 ┬╖ Subject WC-0142</span>
+    
+    <!-- HEADER -->
+    <header class="header">
+      <div class="hdr-left">
+        <span class="hdr-brand">WiCare</span>
+        <span class="hdr-divider">·</span>
+        <span class="hdr-subtitle">Live Monitoring</span>
+        <span class="hdr-divider">·</span>
+        <span class="hdr-subtitle">Room 204</span>
+        <span class="hdr-divider">·</span>
+        <span class="hdr-subtitle">Subject WC-0142</span>
       </div>
       <div class="hdr-right">
-        <div class="status-chip"><div class="dot"></div>{{ verdictText }}</div>
+        <div class="status-pill">
+          <div class="status-dot"></div> {{ verdictText }}
+        </div>
         <div class="hdr-time">{{ timeStr }}</div>
+        <svg class="hdr-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <svg class="hdr-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <div class="hdr-avatar">AR</div>
       </div>
     </header>
 
-    <div class="content-area">
-      <!-- HERO BODY -->
+    <div class="content">
+      
+      <!-- HERO AREA -->
       <div class="hero-card">
-        <div class="figure">
-          <div class="glow"></div>
-          <video class="vid" src="uploads/humanbodyvid.webm" autoplay muted loop playsinline></video>
-        </div>
-        <div class="hero-score">
-          <span class="lbl">Anomaly Score</span>
-          <span class="num">{{ anomalyVal }}</span>
-          <span class="lbl" style="margin-top:8px;">Review Threshold: 70</span>
+        <div class="hero-glow"></div>
+        <video class="hero-video" src="uploads/humanbodyvid.webm" autoplay muted loop playsinline></video>
+        <div class="hero-score-box">
+          <div class="hs-label">Anomaly Score</div>
+          <div class="hs-val">{{ anomalyVal }}</div>
         </div>
       </div>
 
       <!-- KPI GRID -->
-      <div class="vitals-grid">
-        <!-- Breathing -->
-        <div class="vital-card">
-          <div class="vc-hdr">
-            <div class="vc-title"><div class="dot"></div>Breathing Rate</div>
-            <div class="vc-val"><span class="num">{{ breathVal }}</span><span class="u">br/min</span></div>
+      <div class="kpi-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-dot dot-blue"></div> Breathing</div>
+            <div class="card-val">{{ breathVal }}<span class="card-unit">br/min</span></div>
           </div>
-          <svg class="sig-svg" viewBox="0 0 400 64" preserveAspectRatio="none"><polyline class="sig-line" points="{{ breathWave }}"></polyline></svg>
-          <div class="vc-normal">Normal range 12ΓÇô18 br/min</div>
+          <svg class="card-chart" viewBox="0 0 200 50" preserveAspectRatio="none"><polyline class="stroke-blue" fill="none" stroke-width="2" points="{{ breathWave }}"></polyline></svg>
+          <div class="card-footer">Normal range 12–18 br/min</div>
         </div>
 
-        <!-- Motion -->
-        <div class="vital-card">
-          <div class="vc-hdr">
-            <div class="vc-title"><div class="dot"></div>Motion Index</div>
-            <div class="vc-val"><span class="num">{{ motionVal }}</span><span class="u">/1.0</span></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-dot dot-orange"></div> Motion Index</div>
+            <div class="card-val">{{ motionVal }}<span class="card-unit">/100</span></div>
           </div>
-          <svg class="sig-svg" viewBox="0 0 400 64" preserveAspectRatio="none">{{ motionBars }}</svg>
-          <div class="vc-normal">Baseline for this subject: 0.10ΓÇô0.25</div>
+          <svg class="card-chart" viewBox="0 0 200 50" preserveAspectRatio="none">{{ motionBars }}</svg>
+          <div class="card-footer">Baseline for this subject: 10–18</div>
         </div>
 
-        <!-- Fragmentation -->
-        <div class="vital-card">
-          <div class="vc-hdr">
-            <div class="vc-title"><div class="dot"></div>Sleep Fragmentation</div>
-            <div class="vc-val"><span class="num">{{ fragVal }}</span><span class="u">events/night</span></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-dot dot-purple"></div> Sleep Frag.</div>
+            <div class="card-val">{{ fragVal }}<span class="card-unit">events/hr</span></div>
           </div>
-          <svg class="sig-svg" viewBox="0 0 400 64" preserveAspectRatio="none"><polyline class="sig-line" points="{{ fragSpark }}"></polyline></svg>
-          <div class="vc-normal">Normal range 15ΓÇô35 events</div>
+          <svg class="card-chart" viewBox="0 0 200 50" preserveAspectRatio="none"><polyline class="stroke-purple" fill="none" stroke-width="2" points="{{ fragSpark }}"></polyline></svg>
+          <div class="card-footer">Normal range 0–5 events/hr</div>
         </div>
 
-        <!-- Onset Latency -->
-        <div class="vital-card">
-          <div class="vc-hdr">
-            <div class="vc-title"><div class="dot"></div>Onset Latency</div>
-            <div class="vc-val"><span class="num">{{ onsetVal }}</span><span class="u">min</span></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-dot dot-green"></div> Presence Conf.</div>
+            <div class="card-val">{{ presenceVal }}<span class="card-unit">%</span></div>
           </div>
-          <svg class="sig-svg" viewBox="0 0 400 64" preserveAspectRatio="none"><polyline class="sig-line" points="{{ onsetSpark }}"></polyline></svg>
-          <div class="vc-normal">Normal range 10ΓÇô30 min</div>
+          <svg class="card-chart" viewBox="0 0 200 50" preserveAspectRatio="none"><polyline class="stroke-green" fill="none" stroke-width="2" points="{{ presenceSpark }}"></polyline></svg>
+          <div class="card-footer">Target ≥ 85%</div>
         </div>
-      </div>
 
-      <!-- HYPNOGRAM -->
-      <div class="hypno-card">
-        <div class="vc-hdr" style="margin-bottom:16px;">
-          <div class="vc-title"><div class="dot"></div>Sleep Stage Timeline</div>
-          <div class="vc-val"><span class="num">{{ presenceVal }}%</span><span class="u">Presence Conf.</span></div>
+        <!-- HYPNOGRAM FULL WIDTH -->
+        <div class="card hypno-card">
+          <div class="hypno-header">
+            <div class="card-title"><div class="card-dot dot-blue"></div> Sleep Stage Timeline</div>
+            <div class="card-unit" style="font-size:13px;">— hypnogram, 22:00–06:00</div>
+          </div>
+          <svg class="card-chart" viewBox="0 0 800 50" preserveAspectRatio="none" style="height:60px;"><polyline class="stroke-blue" fill="none" stroke-width="3" stroke-linejoin="round" points="{{ hypnoWave }}"></polyline></svg>
+          <div class="card-footer" style="display:flex; gap:16px; align-items:center;">
+            <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px;height:8px;background:var(--color-blue);opacity:0.2;"></div> Wake</div>
+            <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px;height:8px;background:var(--color-blue);opacity:0.4;"></div> REM</div>
+            <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px;height:8px;background:var(--color-blue);opacity:0.7;"></div> Light</div>
+            <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px;height:8px;background:var(--color-blue);"></div> Deep</div>
+          </div>
         </div>
-        <svg class="sig-svg" viewBox="0 0 800 64" preserveAspectRatio="none"><polyline class="sig-line" points="{{ hypnoWave }}" stroke-width="2"></polyline></svg>
-        <div class="vc-normal" style="margin-top:16px;">Stages: Wake (Top) ΓåÆ REM ΓåÆ Light ΓåÆ Deep (Bottom)</div>
       </div>
 
       <!-- ASSESSMENT & TIMELINE -->
-      <div class="assessment-wrap">
-        <div class="diag-card">
-          <div class="diag-header">
-            <h3>AI ANALYSIS ┬╖ Current Assessment</h3>
+      <div class="assessment-layout">
+        
+        <!-- Assessment Card -->
+        <div class="card">
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            AI ANALYSIS
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:baseline; padding: 16px; background:var(--bg-card); border-radius:8px;">
-            <div class="diag-pattern">{{ patternLabel }}</div>
-            <div class="status-chip" style="background:transparent; border:1px solid currentColor;">{{ verdictText }}</div>
-          </div>
-          <div style="display:flex; gap:40px; margin-top:8px;">
-            <div><div class="diag-prob">{{ probability }}<span>%</span></div><div class="lbl">Probability</div></div>
-            <div><div class="diag-prob">{{ confidence }}<span>%</span></div><div class="lbl">Confidence</div></div>
-          </div>
+          <h2 style="margin:0 0 20px 0; font-size:18px;">Current Assessment</h2>
           
-          <div class="inf-signals">
-            <div class="lbl" style="margin-bottom:8px;">Most Influential Signals</div>
-            <sc-if value="{{ flagged }}">
-              <sc-for list="{{ features }}" as="f" hint-placeholder-count="3">
-                <div class="inf-sig">
-                  <div class="inf-lbl">{{ f.name }}</div>
-                  <div class="inf-track"><div class="inf-bar" style="width:{{ f.w }}"></div></div>
-                  <div class="inf-pct">{{ f.pct }}</div>
-                </div>
-              </sc-for>
-            </sc-if>
-            <sc-if value="{{ notFlagged }}">
-              <div style="font-size:12px; color:var(--muted); padding:16px 0;">No significant deviations. Subject is within normal baseline.</div>
-            </sc-if>
+          <div style="background:var(--bg-main); padding:16px; border-radius:8px; margin-bottom:24px; border:1px solid var(--border);">
+            <div style="font-size:18px; font-weight:600; color:var(--color-green); margin-bottom:8px;" class="app-pattern">{{ patternLabel }}</div>
+            <div style="display:inline-block; padding:4px 10px; background:rgba(255,255,255,0.1); border-radius:12px; font-size:12px;">{{ verdictText }}</div>
           </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:32px;">
+            <div style="text-align:center; padding:16px; border:1px solid var(--border); border-radius:8px;">
+              <div style="font-size:24px; font-weight:700;">{{ probability }}%</div>
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Probability</div>
+            </div>
+            <div style="text-align:center; padding:16px; border:1px solid var(--border); border-radius:8px;">
+              <div style="font-size:24px; font-weight:700;">{{ confidence }}%</div>
+              <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; margin-top:4px;">Confidence</div>
+            </div>
+          </div>
+
+          <div style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; margin-bottom:16px;">Most Influential Signals</div>
+          <sc-if value="{{ flagged }}">
+            <sc-for list="{{ features }}" as="f">
+              <div class="inf-sig">
+                <div class="inf-lbl">{{ f.name }}</div>
+                <div class="inf-track"><div class="inf-bar" style="width:{{ f.w }}"></div></div>
+                <div class="inf-pct">{{ f.pct }}</div>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ notFlagged }}">
+            <div style="font-size:13px; color:var(--text-muted); padding:16px 0;">Patient is operating within healthy baseline bounds.</div>
+          </sc-if>
         </div>
 
-        <div class="timeline-card">
-          <div class="lbl" style="margin-bottom:24px;">Event Timeline</div>
-          <sc-for list="{{ timeline }}" as="ev" hint-placeholder-count="3">
-            <div class="tl-item">
-              <div class="tl-dot {{ ev.alertCls }}"></div>
-              <div class="tl-line"></div>
-              <div class="tl-content">
+        <!-- Event Timeline -->
+        <div class="card">
+          <div style="font-size:14px; font-weight:600; margin-bottom:24px;">Event Timeline</div>
+          <div>
+            <sc-for list="{{ timeline }}" as="ev">
+              <div class="tl-item">
                 <div class="tl-time">{{ ev.time }}</div>
+                <div class="tl-dot-wrap">
+                  <div class="tl-dot-inner {{ ev.alertCls }}"></div>
+                  <div class="tl-line"></div>
+                </div>
                 <div class="tl-desc">{{ ev.desc }}</div>
               </div>
-            </div>
-          </sc-for>
+            </sc-for>
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </main>
 
   <!-- FLOATING POPUP -->
   <div class="sim-popup">
-    <div class="sp-hdr">
-      <div class="sp-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-4M12 6V2M4 12H2M22 12h-2M18.36 5.64l-2.82 2.82M5.64 18.36l2.82-2.82M5.64 5.64l2.82 2.82M18.36 18.36l-2.82-2.82"/></svg>
-        Simulation Mode
-      </div>
+    <div class="sp-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Simulation Mode
     </div>
     <div class="sp-body">
       <div class="sp-group">
@@ -396,8 +576,8 @@ const REF = {
     pattern_name: 'Normal Sleep Pattern',
     probability: 92.4, confidence: 96,
     breathing_rate:{ value:15.1, variability:1.3 },
-    motion_index:{ value:0.18 },
-    fragmentation:{ value:24 },
+    motion_index:{ value:12.0 }, // scaled to /100 for display
+    fragmentation:{ value:3 },
     onset_latency:{ value:14 },
     presence_conf:{ value:98 },
     anomaly_score:38, threshold:70, status:'normal',
@@ -414,19 +594,19 @@ const REF = {
     pattern_name: 'Sleep-Disordered Breathing',
     probability: 88.1, confidence: 91,
     breathing_rate:{ value:18.5, variability:4.2 },
-    motion_index:{ value:0.35 },
-    fragmentation:{ value:78 },
+    motion_index:{ value:35.0 },
+    fragmentation:{ value:12 },
     onset_latency:{ value:18 },
     presence_conf:{ value:85 },
     anomaly_score:84, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'breathing_rate', sigma:3.2, label:'Breathing variability' },
-      { feature:'presence_conf', sigma:-2.8, label:'Presence confidence (dips)' },
-      { feature:'fragmentation', sigma:2.4, label:'Sleep fragmentation' }
+      { feature:'breathing_rate', sigma:3.2, label:'Respiration Variance' },
+      { feature:'presence_conf', sigma:-2.8, label:'Presence Confidence' },
+      { feature:'fragmentation', sigma:2.4, label:'Sleep Fragmentation' }
     ],
     timeline: [
       { time:'23:10', desc:'High variance in respiration phase', alertCls:'alert' },
-      { time:'01:25', desc:'Presence confidence dip (suspected torso shift)', alertCls:'alert' },
+      { time:'01:25', desc:'Presence confidence dip', alertCls:'alert' },
       { time:'04:15', desc:'Clustered motion events post-apnea', alertCls:'alert' }
     ]
   },
@@ -435,15 +615,15 @@ const REF = {
     pattern_name: 'Insomnia Pattern',
     probability: 94.6, confidence: 88,
     breathing_rate:{ value:16.0, variability:1.8 },
-    motion_index:{ value:0.75 },
-    fragmentation:{ value:85 },
+    motion_index:{ value:75.0 },
+    fragmentation:{ value:15 },
     onset_latency:{ value:110 },
     presence_conf:{ value:95 },
     anomaly_score:91, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'onset_latency', sigma:4.1, label:'Sleep-onset latency' },
-      { feature:'motion_index', sigma:3.5, label:'Motion ┬╖ restlessness' },
-      { feature:'fragmentation', sigma:3.0, label:'Sleep fragmentation' }
+      { feature:'onset_latency', sigma:4.1, label:'Sleep Onset Latency' },
+      { feature:'motion_index', sigma:3.5, label:'Movement Index' },
+      { feature:'fragmentation', sigma:3.0, label:'Sleep Fragmentation' }
     ],
     timeline: [
       { time:'22:00', desc:'In bed, sustained high motion', alertCls:'alert' },
@@ -456,13 +636,13 @@ const REF = {
     pattern_name: 'REM Behavior Disorder',
     probability: 81.3, confidence: 82,
     breathing_rate:{ value:15.8, variability:2.1 },
-    motion_index:{ value:0.62 },
-    fragmentation:{ value:45 },
+    motion_index:{ value:62.0 },
+    fragmentation:{ value:8 },
     onset_latency:{ value:15 },
     presence_conf:{ value:97 },
     anomaly_score:76, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'motion_index', sigma:3.8, label:'Motion spikes in REM' }
+      { feature:'motion_index', sigma:3.8, label:'Movement Spikes' }
     ],
     timeline: [
       { time:'23:40', desc:'Entered expected REM window' },
@@ -475,14 +655,14 @@ const REF = {
     pattern_name: 'Possible Restless Leg Syndrome',
     probability: 79.8, confidence: 85,
     breathing_rate:{ value:14.9, variability:1.5 },
-    motion_index:{ value:0.85 },
-    fragmentation:{ value:60 },
+    motion_index:{ value:85.0 },
+    fragmentation:{ value:10 },
     onset_latency:{ value:25 },
     presence_conf:{ value:96 },
     anomaly_score:82, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'motion_index', sigma:4.5, label:'Periodic motion spikes' },
-      { feature:'fragmentation', sigma:1.8, label:'Sleep fragmentation' }
+      { feature:'motion_index', sigma:4.5, label:'Periodic Movement' },
+      { feature:'fragmentation', sigma:1.8, label:'Sleep Fragmentation' }
     ],
     timeline: [
       { time:'22:30', desc:'Rhythmic low-amplitude motion begins', alertCls:'alert' },
@@ -495,14 +675,14 @@ const REF = {
     pattern_name: 'Possible Narcolepsy',
     probability: 86.5, confidence: 79,
     breathing_rate:{ value:15.2, variability:1.4 },
-    motion_index:{ value:0.25 },
-    fragmentation:{ value:92 },
+    motion_index:{ value:25.0 },
+    fragmentation:{ value:18 },
     onset_latency:{ value:2 },
     presence_conf:{ value:98 },
     anomaly_score:88, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'onset_latency', sigma:-4.2, label:'Abnormally short onset' },
-      { feature:'fragmentation', sigma:3.9, label:'Frequent stage transitions' }
+      { feature:'onset_latency', sigma:-4.2, label:'REM Latency' },
+      { feature:'fragmentation', sigma:3.9, label:'Sleep Fragmentation' }
     ],
     timeline: [
       { time:'22:10', desc:'Abrupt REM onset (SOREMP)', alertCls:'alert' },
@@ -515,14 +695,14 @@ const REF = {
     pattern_name: 'Unclassified Abnormal',
     probability: 72.1, confidence: 60,
     breathing_rate:{ value:12.5, variability:0.8 },
-    motion_index:{ value:0.05 },
-    fragmentation:{ value:15 },
+    motion_index:{ value:5.0 },
+    fragmentation:{ value:2 },
     onset_latency:{ value:45 },
     presence_conf:{ value:92 },
     anomaly_score:73, threshold:70, status:'flagged',
     feature_contributions:[
-      { feature:'motion_index', sigma:-2.2, label:'Reduced motion' },
-      { feature:'onset_latency', sigma:1.5, label:'Elevated onset' }
+      { feature:'motion_index', sigma:-2.2, label:'Reduced Motion' },
+      { feature:'onset_latency', sigma:1.5, label:'Elevated Onset' }
     ],
     timeline: [
       { time:'22:00', desc:'Unusually still profile', alertCls:'alert' },
@@ -546,7 +726,7 @@ class Component extends DCLogic {
     const v = this.flatten(REF[startKey]);
     this.state = { 
       scenario: startKey, 
-      uiScenario: 'apnea', // dropdown selection
+      uiScenario: 'narcolepsy',
       isAbnormalToggled: false,
       v, 
       tweening: false, 
@@ -581,7 +761,7 @@ class Component extends DCLogic {
   }
   
   componentDidMount(){ 
-    const v=document.querySelector('.vid'); if(v){ v.loop=true; v.muted=true; v.play().catch(()=>{}); }
+    const v=document.querySelector('.hero-video'); if(v){ v.loop=true; v.muted=true; v.play().catch(()=>{}); }
     this.ambientTimer = setInterval(()=>this.ambientTick(), 2000);
     this.waveTimer = setInterval(()=>{
       this.setState({timeOffset: this.state.timeOffset + 1, timeStr: this.getClock()});
@@ -594,9 +774,8 @@ class Component extends DCLogic {
     const v = this.state.v;
     const nv = { ...v,
       breathVal: clamp(v.breathVal + (Math.random()-0.5)*0.6, 11, 20),
-      motion: clamp(v.motion + (Math.random()-0.5)*0.06, 0, 1),
-      frag: clamp(v.frag + (Math.random()-0.5)*3, 0, 100),
-      onset: clamp(v.onset + (Math.random()-0.5)*1.5, 0, 60),
+      motion: clamp(v.motion + (Math.random()-0.5)*2.0, 0, 100),
+      frag: clamp(v.frag + (Math.random()-0.5)*1, 0, 100),
       presence: clamp(v.presence + (Math.random()-0.5)*1.2, 85, 100)
     };
     this.setState({ v: nv });
@@ -610,8 +789,6 @@ class Component extends DCLogic {
     const start = performance.now();
     this.setState({ tweening:true, scenario: key });
     
-    // For arrays (contributions, timeline) we just hard-swap at the end, 
-    // but numbers we interpolate
     const step = (now)=>{
       const t = Math.min(1, (now-start)/duration);
       const e = easeInOut(t);
@@ -649,33 +826,33 @@ class Component extends DCLogic {
     };
   }
 
-  generateWaveform(val, varb, offset, w=400, h=64) {
+  generateWaveform(val, varb, offset, w=200, h=50) {
     const pts = [];
     for(let i=0; i<=w; i+=4) {
       const t = (i + offset*2) * 0.05;
       const freq = val / 15;
       const noise = Math.sin(t * 3.1) * (varb * 2);
-      const y = h/2 + Math.sin(t * freq) * (h/3) + noise;
+      const y = h/2 + Math.sin(t * freq) * (h/4) + noise;
       pts.push(`${i},${y.toFixed(1)}`);
     }
     return pts.join(' ');
   }
 
-  generateMotionBars(val, w=400, h=64) {
+  generateMotionBars(val, w=200, h=50) {
     let out = '';
-    const numBars = 40;
+    const numBars = 30;
     for(let i=0; i<numBars; i++) {
       const seed = Math.sin(i * 12.34);
-      const active = (seed + 1)/2 < val; 
+      const active = (seed + 1)/2 < (val/100); 
       if(active) {
-        const bh = 10 + Math.abs(Math.cos(i*7)) * (h-20);
-        out += `<rect x="${i*(w/numBars)}" y="${h-bh}" width="${(w/numBars)-2}" height="${bh}" class="sig-bar" rx="2"></rect>`;
+        const bh = 5 + Math.abs(Math.cos(i*7)) * (h-15);
+        out += `<rect x="${i*(w/numBars)}" y="${h-bh}" width="${(w/numBars)-2}" height="${bh}" fill="var(--color-orange)" rx="2"></rect>`;
       }
     }
     return out;
   }
 
-  generateHypnogram(frag, onset, w=800, h=64) {
+  generateHypnogram(frag, onset, w=800, h=50) {
     const pts = [];
     const steps = 40;
     let currentBand = 0; // 0=Wake, 1=REM, 2=Light, 3=Deep
@@ -694,7 +871,7 @@ class Component extends DCLogic {
         }
         if (Math.random() < 0.05) currentBand = 0;
       }
-      const y = 8 + currentBand * 16;
+      const y = 8 + currentBand * 11;
       if(i > 0) {
         const prevX = ((i-1)/steps) * w;
         pts.push(`${prevX},${y}`);
@@ -715,9 +892,9 @@ class Component extends DCLogic {
       return { name: f.label, pct: pcts[i]+'%', w: pcts[i]+'%' };
     });
 
-    const sparkLine = (val) => {
+    const sparkLine = (val, h=50) => {
       const pts = [];
-      for(let i=0; i<20; i++){ pts.push(`${i*20},${32 + Math.sin(i+val)*12}`); }
+      for(let i=0; i<20; i++){ pts.push(`${i*10},${(h/2) + Math.sin(i+val)*8}`); }
       return pts.join(' ');
     };
 
@@ -726,7 +903,7 @@ class Component extends DCLogic {
       timeStr: s.timeStr,
       
       setHealthy: ()=>{ this.setState({isAbnormalToggled:false, uiScenario:'healthy'}); },
-      setAbnormal: ()=>{ this.setState({isAbnormalToggled:true, uiScenario:'apnea'}); },
+      setAbnormal: ()=>{ this.setState({isAbnormalToggled:true, uiScenario:'narcolepsy'}); },
       setScenario: (e)=>{ this.setState({uiScenario: e.target.value}); },
       runSim: ()=>{ this.goTo(s.uiScenario); },
       
@@ -743,24 +920,21 @@ class Component extends DCLogic {
       isUnknown: s.uiScenario === 'unknown',
       
       breathVal: v.breathVal.toFixed(1),
-      motionVal: v.motion.toFixed(2),
+      motionVal: Math.round(v.motion),
       fragVal: Math.round(v.frag),
-      onsetVal: Math.round(v.onset),
       presenceVal: Math.round(v.presence),
       
       breathWave: this.generateWaveform(v.breathVal, v.breathVar, s.timeOffset),
       motionBars: this.generateMotionBars(v.motion),
       fragSpark: sparkLine(v.frag),
-      onsetSpark: sparkLine(v.onset),
+      presenceSpark: sparkLine(v.presence),
       hypnoWave: this.generateHypnogram(v.frag, v.onset),
       
       anomalyVal: anomaly,
-      anomalyW: anomaly+'%',
-      fillCls: anomaly >= v.threshold ? 'over' : '',
-      verdictText: flagged ? 'Flagged for review' : 'Healthy',
+      verdictText: flagged ? 'Requires clinical review' : 'Healthy',
       flagged, notFlagged: !flagged,
       
-      patternLabel: flagged ? v.pattern_name : 'Healthy / Normal Sleep',
+      patternLabel: flagged ? v.pattern_name : 'No Significant Deviations',
       probability: Math.round(v.probability),
       confidence: Math.round(v.confidence),
       features,
