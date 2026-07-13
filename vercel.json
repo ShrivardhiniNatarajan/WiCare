@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/project/Wicare%20Dashboard.dc.html",
+      "permanent": false
+    }
+  ]
+}
